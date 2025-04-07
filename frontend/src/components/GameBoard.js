@@ -9,7 +9,7 @@ export default function GameBoard({ board, onClick, buttonsDisabled }) {
                                 row.map(
                                     (item, cIdx) =>
                                         <li key={cIdx}>
-                                            <button id="disabled" disabled={buttonsDisabled} onClick={() => onClick(rIdx, cIdx)}>{item}</button>
+                                            <button id="disabled" disabled={buttonsDisabled || item !== null } onClick={() => onClick(rIdx, cIdx)}>{item}</button>
                                         </li>
                                 )
                             }
