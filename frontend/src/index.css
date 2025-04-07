@@ -54,6 +54,12 @@ h1 {
   padding: 1rem;
 }
 
+#disabled {
+  background-color: #b12121; /* Gray */
+  color: #318524; /* Dark Gray */
+  cursor: not-allowed;
+}
+
 #mode-switch {
   padding: 10px 20px;
   border: none;

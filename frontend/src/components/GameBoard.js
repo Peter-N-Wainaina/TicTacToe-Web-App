@@ -1,21 +1,21 @@
-export default function GameBoard({board}){
+export default function GameBoard({ board, onClick, buttonsDisabled }) {
     return <ol id="board">
         {
             board.map(
-                (row, rIdx) => 
+                (row, rIdx) =>
                     <li key={rIdx}>
                         <ol>
                             {
                                 row.map(
                                     (item, cIdx) =>
                                         <li key={cIdx}>
-                                            <button>{item}</button>
+                                            <button id="disabled" disabled={buttonsDisabled} onClick={() => onClick(rIdx, cIdx)}>{item}</button>
                                         </li>
                                 )
                             }
                         </ol>
 
-                </li>
+                    </li>
             )
         }
     </ol>
