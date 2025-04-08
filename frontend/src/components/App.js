@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react'
 import GameBoard from './GameBoard';
 import Header from './Header';
-import { useState, useEffect } from 'react'
+
+import GameOverModal from './GameOverModal';
+import { isGameOver } from '../utils/gameLogic';
 
 const EMPTY_BOARD = [
   [null, null, null], 
@@ -14,10 +17,20 @@ const AI_SYMBOL ="O"
 export default function App() {
   const [aiTurn, setAITurn] = useState(false)
   const [board, setBoard] = useState(EMPTY_BOARD)
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState(null);
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (aiTurn) handleAIMove();
+    const result = isGameOver(board);
+    setGameOver(result.game_over);
+    setWinner(result.winner);
+
+    if (aiTurn && !result.game_over) handleAIMove();
+
+  },[board])
+
+  useEffect(() => {
   }, [aiTurn])
 
   function getRandomMove() {
@@ -52,10 +65,22 @@ export default function App() {
     setAITurn(true);
   }
 
+  function resetGame(){
+    setBoard(EMPTY_BOARD);
+    setGameOver(false);
+    setAITurn(false);
+  }
+
   return (
     <div className="App">
       <Header />
-      <GameBoard board={board} onClick={handlePlayerMove} buttonsDisabled={aiTurn}/>
+      <GameBoard board={board} onClick={handlePlayerMove} buttonsDisabled={aiTurn || gameOver}/>
+      {gameOver &&(
+        <GameOverModal
+          isDraw={gameOver && !winner}
+          isAIWinner={winner === AI_SYMBOL}
+          onClose={resetGame}
+        />)}
     </div>
   );
 }

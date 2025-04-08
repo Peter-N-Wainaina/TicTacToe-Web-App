@@ -10,12 +10,13 @@ function isDraw(board) {
 
   function scanRows(board){
     for (const row of board){
-      const row_set = new Set(row);
-      if (row_set.length === 1){
-        const row_value = row_set[0];
-        if (row_value !== null) return row_value;
-      }
+      if (allEqual(row)) return row[0];
     }
+    return null
+  }
+
+  function allEqual(arr){
+    return arr.every(cell => cell != null && cell === arr[0])
   }
 
   function scanDiagonals(board) {
@@ -48,7 +49,7 @@ function isDraw(board) {
     return row_winner || col_winner || diag_winner
   }
 
-  export function isGameOver(){
+  export function isGameOver(board){
     const winner = checkWinner(board);
     if (winner !== null) return {game_over: true, winner:winner}
     if (isDraw(board)) return {game_over: true, winner: null}
