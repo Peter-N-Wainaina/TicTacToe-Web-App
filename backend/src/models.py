@@ -10,3 +10,6 @@ class MoveInput(BaseModel):
     row: int
     col: int
     symbol: Literal["X","O"]
+
+class Symbol(BaseModel):
+    symbol: Literal["X","O"]

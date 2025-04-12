@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+
 import GameBoard from './GameBoard';
 import Header from './Header';
-
 import GameOverModal from './GameOverModal';
-import { isGameOver } from '../utils/gameLogic';
 
 const EMPTY_BOARD = [
   [null, null, null], 
@@ -19,62 +18,65 @@ export default function App() {
   const [board, setBoard] = useState(EMPTY_BOARD)
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState(null);
+  const [inProgress, setInProgress] = useState(false);
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    const result = isGameOver(board);
-    setGameOver(result.game_over);
-    setWinner(result.winner);
-
-    if (aiTurn && !result.game_over) handleAIMove();
-
-  },[board])
-
-  useEffect(() => {
-  }, [aiTurn])
-
-  function getRandomMove() {
-    const availableMoves = [];
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (board[i][j] === null) {
-          availableMoves.push({ row: i, col: j });
-        }
-      }
+  async function make_post_call(endpoint, input){
+    try{
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input)
+      });
+      return response;
     }
-    const randomIndex = Math.floor(Math.random() * availableMoves.length);
-    return availableMoves[randomIndex];
-  }
- 
-  function makeMove(rowIdx, colIdx, symbol) {
-    setBoard((prevBoard) => {
-      const newBoard = prevBoard.map((row) => [...row]);
-      newBoard[rowIdx][colIdx] = symbol;
-      return newBoard;
-    });
+    catch(err){
+      console.error("Api call error: ", err);
+    }
   }
 
-  function handleAIMove(){
-    const {row, col} = getRandomMove();
-    makeMove(row, col, AI_SYMBOL)
-    setAITurn(false);
+  async function startGame(playerSymbol = PLAYER_SYMBOL) {
+    const endpoint = "http://localhost:8000/start";
+    const input = { symbol: playerSymbol };
+    const response = await make_post_call(endpoint, input);
+    if (!response?.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    setInProgress(true);
   }
 
-  function handlePlayerMove(row, col){
-    makeMove(row, col, PLAYER_SYMBOL)
-    setAITurn(true);
+  async function updateBoard(row, col) {
+    const endpoint = "http://localhost:8000/make_move";
+    const input = {
+      row,
+      col,
+      symbol: PLAYER_SYMBOL
+    };
+    const response = await make_post_call(endpoint, input);
+
+    if (!response?.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    const { board, game_over, winner } = await response.json();
+    setBoard(board);
+    setGameOver(game_over);
+    setWinner(winner);
   }
 
   function resetGame(){
     setBoard(EMPTY_BOARD);
     setGameOver(false);
     setAITurn(false);
+    setInProgress(false);
   }
 
   return (
     <div className="App">
       <Header />
-      <GameBoard board={board} onClick={handlePlayerMove} buttonsDisabled={aiTurn || gameOver}/>
+      {!inProgress && <button onClick={() => startGame(PLAYER_SYMBOL)}>StartGame</button>}
+      {inProgress && <GameBoard board={board} onClick={updateBoard} buttonsDisabled={aiTurn || gameOver}/> }
       {gameOver &&(
         <GameOverModal
           isDraw={gameOver && !winner}
