@@ -11,8 +11,10 @@ WIN_SCORE = 10
 LOSE_SCORE = -10
 DRAW_SCORE = 0
 
-PREFERRED_MOVE_ORDER = [
-    (1, 1),  # center
-    (0, 0), (0, 2), (2, 0), (2, 2),  # corners
-    (0, 1), (1, 0), (1, 2), (2, 1)   # edges
-]
+TIER_MAP = {
+    0: [(1, 1)],
+    1: [(0, 0), (0, 2), (2, 0), (2, 2)],
+    2: [(0, 1), (1, 0), (1, 2), (2, 1)],
+}
+# Create reverse lookup for tier
+MOVE_TO_TIER = {move: tier for tier, moves in TIER_MAP.items() for move in moves}

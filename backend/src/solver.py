@@ -1,5 +1,6 @@
 from copy import deepcopy
 from math import inf
+import random
 
 import src.constants as constants
 from src.exceptions import InvalidMove, CellAlreadyEmpty
@@ -65,8 +66,8 @@ class MinimaxSolver(object):
 
             moves_scores[(r,c)] = score
 
-        moves_scores = self._sort_moves_scores(list(moves_scores.items()))
-        return moves_scores[0][0]
+        return self._select_best_move(list(moves_scores.items()))
+       
 
     def _minimax(self, board, is_maximizing, depth=0):
         winner = get_winner(board)
@@ -99,9 +100,17 @@ class MinimaxSolver(object):
         else:
             return constants.LOSE_SCORE + depth
         
-    def _sort_moves_scores(self, moves_scores):
-        """Returns whether move1 is preferred to move2"""
-        return sorted(
-            moves_scores, key=lambda item: (-item[1], constants.PREFERRED_MOVE_ORDER.index(item[0]))
-        )
+    def _select_best_move(self, moves_scores):
+        """Returns a randomly selected best move among the highest scoring and highest priority tier."""
+
+        best_score = max(score for _, score in moves_scores)
+        best_score_moves = [move for move, score in moves_scores if score == best_score]
+
+        best_tier = min(constants.MOVE_TO_TIER[move] for move in best_score_moves)
+        best_tier_moves = [move for move in best_score_moves if constants.MOVE_TO_TIER[move] ==best_tier]
+
+        return random.choice(best_tier_moves)
+
+
+
         
