@@ -30,14 +30,19 @@ class MinimaxSolver(object):
         if is_game_over(self.board, self.winner):
             self.game_over = True
             return 
-
-        ai_row, ai_col = self.get_best_move()
-        ai_move = (ai_row, ai_col, self.ai_symbol)
-        self.make_move(ai_move)
-
+  
+        self.make_ai_move()
         self.winner = get_winner(self.board)
         self.game_over = is_game_over(self.board, self.winner)
 
+    def make_ai_move(self):
+        ai_row, ai_col = self.choose_ai_move()
+        ai_move = (ai_row, ai_col, self.ai_symbol)
+        self.make_move(ai_move)
+    
+    def choose_ai_move(self):
+        return (1, 1) if self.board == constants.EMPTY_BOARD else self.get_best_move()
+    
     def make_move(self, move):
         row, col, symbol = move
 

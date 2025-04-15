@@ -1,7 +1,7 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.models import GameState, MoveInput, Symbol
+from src.models import GameState, MoveInput, StartInput
 from src.solver import MinimaxSolver
 
 app = FastAPI()
@@ -19,12 +19,18 @@ solver = None
 async def root():
     return {"message": "Welcome to TicTacToe"}
 
-@app.post("/start", status_code=status.HTTP_204_NO_CONTENT)
-async def start_game(input: Symbol):
+@app.post("/start", response_model=GameState)
+async def start_game(input: StartInput):
     global solver
+
     player_symbol = input.symbol
     ai_symbol = "X" if player_symbol == "O" else "O"
     solver = MinimaxSolver(ai_symbol=ai_symbol)
+
+    if input.go_first:
+        solver.make_ai_move()
+        
+    return solver.game_state
 
 @app.post("/make_move", response_model=GameState)
 async def make_move(input: MoveInput):

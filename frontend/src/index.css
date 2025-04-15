@@ -95,3 +95,22 @@ h1 {
   border-radius: 8px;
   text-align: center;
 }
+
+.player-config {
+  margin-bottom: 1rem;
+  color: #c0c0a0;
+}
+
+.config-btn {
+  padding: 0.3rem 0.6rem;
+  margin-right: 0.5rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #222;
+  color: #eee;
+  cursor: pointer;
+}
+
+.config-btn.active {
+  background-color: #555;
+}

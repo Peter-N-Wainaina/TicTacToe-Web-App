@@ -11,5 +11,6 @@ class MoveInput(BaseModel):
     col: int
     symbol: Literal["X","O"]
 
-class Symbol(BaseModel):
+class StartInput(BaseModel):
     symbol: Literal["X","O"]
+    go_first: bool
