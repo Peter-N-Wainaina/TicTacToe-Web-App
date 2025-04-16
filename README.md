@@ -15,8 +15,10 @@ A web-based implementation of the classic TicTacToe game. Challenge yourself aga
 
 - [Node.js](https://nodejs.org/) (v16+ recommended)
 - [npm](https://www.npmjs.com/)
+- [Python 3.10+](https://www.python.org/downloads/)
+- [pip](https://pip.pypa.io/en/stable/)
 
-### Run the App
+### Run the Frontend
 
 ```bash
 cd frontend
@@ -24,8 +26,16 @@ npm install
 npm start
 ```
 
+### Run the Backend
+
+```cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+This starts the FastAPI server at http://localhost:8000.
+
 ## 📌 Future Plans
 
-- Better UI styling
 - Option to play against another human
 - Backend for multiplayer support

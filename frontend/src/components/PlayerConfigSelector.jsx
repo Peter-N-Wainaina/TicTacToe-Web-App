@@ -7,7 +7,7 @@ export default function PlayerConfigSelector({ onSymbolChange, onTurnChange, cur
     <div className="player-config">
       You're{" "}
       <button
-        onClick={() => onSymbolChange({SYMBOL_X})}
+        onClick={() => onSymbolChange(SYMBOL_X)}
         className={`config-btn ${currentSymbol === SYMBOL_X ? "active" : ""}`}
       >
         {SYMBOL_X}
