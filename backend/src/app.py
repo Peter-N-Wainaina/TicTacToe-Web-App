@@ -26,9 +26,7 @@ async def root():
 async def start_game(input: StartInput):
     global solver
 
-    player_symbol = input.symbol
-    ai_symbol = "X" if player_symbol == "O" else "O"
-    solver = MinimaxSolver(ai_symbol=ai_symbol)
+    solver = MinimaxSolver(ai_symbol=input.symbol)
 
     if input.go_first:
         solver.make_ai_move()
